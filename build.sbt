@@ -31,11 +31,11 @@ lazy val common = (project in file("common"))
 ///////////////////////////////////////
 ////////////Project MNIST//////////////
 ///////////////////////////////////////
-lazy val MNIST = (project in file("MNIST"))
+lazy val MNIST = (project in file("Mnist"))
   .dependsOn(common)
   .settings(commonSettings: _*)
   .settings(
-    name := "MNIST",
+    name := "Mnist",
     libraryDependencies ++= Seq(
       "org.deeplearning4j" % "deeplearning4j-core" % "1.0.0-beta3", // DeepLearning for Java
       "org.nd4j" % "nd4j-native-platform" % "1.0.0-beta3", // N-Dimensional Array support for DeepLearning backend

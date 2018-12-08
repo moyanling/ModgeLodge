@@ -12,8 +12,19 @@ object BufferedImage {
   implicit def toEnrichedBufferedImage(img: image.BufferedImage): BufferedImage = BufferedImage(img)
 }
 
+/**
+  * Enriched [[java.awt.image.BufferedImage]]
+  *
+  * @param img [[java.awt.image.BufferedImage]] instance
+  */
 case class BufferedImage(img: image.BufferedImage) {
 
+  /**
+    * Loads the image data from 2d int array into the [[img]]
+    *
+    * @param arr 2d array
+    * @return
+    */
   def from(arr: Array[Array[Int]]): image.BufferedImage = {
     for (i <- 0 until img.getWidth) {
       for (j <- 0 until img.getHeight) {
@@ -24,6 +35,11 @@ case class BufferedImage(img: image.BufferedImage) {
     img
   }
 
+  /**
+    * Generates the base64 image url for the [[img]]
+    *
+    * @return
+    */
   def toBase64Url: String = {
     val os: ByteArrayOutputStream = new ByteArrayOutputStream()
     ImageIO.write(img, "jpg", os)
