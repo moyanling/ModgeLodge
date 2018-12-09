@@ -15,6 +15,16 @@ lazy val root =
   (project in file("."))
     .settings(commonSettings: _*)
     .aggregate(Mnist, Common)
+    .settings(
+      libraryDependencies ++= Seq(
+        "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0", // Logging
+        "ch.qos.logback" % "logback-classic" % "1.2.3" // Logging backend
+      )
+    )
+
+/* Docker image for Jupyter Notebook Env */
+enablePlugins(DockerPlugin)
+mainClass in Compile := Some("org.mo39.fmbh.ModgeLodge")
 
 ///////////////////////////////////////
 ////////////Project Common/////////////
