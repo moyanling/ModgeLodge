@@ -39,9 +39,7 @@ class Mnist extends LazyLogging {
       .toDoubleMatrix
       .map(_.map(v => 255 - (v * 255).toInt))
     // Build BufferedImage and get Base64 Url
-    new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY)
-      .from(arr)
-      .toBase64Url
+    new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY).from(arr).toBase64Url
   }
 
   val seed = 42 // fixed random seed for reproducibility

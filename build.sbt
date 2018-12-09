@@ -7,39 +7,41 @@ resolvers in ThisBuild ++= Seq(
 
 lazy val commonSettings = Seq(
   organization := "org.mo39.fmbh",
-  version := "1.0-SNAPSHOT",
-  scalaVersion := "2.12.8"
+  version := "0.1-SNAPSHOT",
+  scalaVersion := "2.12.7"
 )
 
-lazy val root = (project in file("."))
-  .settings(commonSettings: _*)
-  .enablePlugins(PlayScala)
-  .aggregate(MNIST)
-  .dependsOn(MNIST)
+lazy val root =
+  (project in file("."))
+    .settings(commonSettings: _*)
+    .aggregate(Mnist, Common)
 
 ///////////////////////////////////////
 ////////////Project Common/////////////
 ///////////////////////////////////////
-lazy val common = (project in file("common"))
-  .settings(commonSettings)
-  .settings(
-    name := "modgelodge-common",
-    libraryDependencies ++= Seq(
+lazy val Common =
+  (project in file("Common"))
+    .settings(commonSettings: _*)
+    .settings(
+      name := "Common",
+      libraryDependencies ++= Seq(
+        "org.scala-lang.modules" %% "scala-xml" % "1.1.1"
+      )
     )
-  )
 
 ///////////////////////////////////////
-////////////Project MNIST//////////////
+////////////Project Mnist//////////////
 ///////////////////////////////////////
-lazy val MNIST = (project in file("Mnist"))
-  .dependsOn(common)
-  .settings(commonSettings: _*)
-  .settings(
-    name := "Mnist",
-    libraryDependencies ++= Seq(
-      "org.deeplearning4j" % "deeplearning4j-core" % "1.0.0-beta3", // DeepLearning for Java
-      "org.nd4j" % "nd4j-native-platform" % "1.0.0-beta3", // N-Dimensional Array support for DeepLearning backend
-      "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0", // Logging
-      "ch.qos.logback" % "logback-classic" % "1.2.3" // Logging backend
+lazy val Mnist =
+  (project in file("Mnist"))
+    .dependsOn(Common)
+    .settings(commonSettings: _*)
+    .settings(
+      name := "Mnist",
+      libraryDependencies ++= Seq(
+        "org.deeplearning4j" % "deeplearning4j-core" % "1.0.0-beta3", // DeepLearning for Java
+        "org.nd4j" % "nd4j-native-platform" % "1.0.0-beta3", // N-Dimensional Array support for DeepLearning backend
+        "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0", // Logging
+        "ch.qos.logback" % "logback-classic" % "1.2.3" // Logging backend
+      )
     )
-  )
