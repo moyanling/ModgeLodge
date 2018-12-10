@@ -12,11 +12,7 @@ object BufferedImage {
   implicit def toEnrichedBufferedImage(img: image.BufferedImage): BufferedImage = BufferedImage(img)
 }
 
-/**
-  * Enriched [[java.awt.image.BufferedImage]]
-  *
-  * @param img [[java.awt.image.BufferedImage]] instance
-  */
+/* Enriched BufferedImage */
 case class BufferedImage(img: image.BufferedImage) {
 
   /**

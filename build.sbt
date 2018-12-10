@@ -16,6 +16,7 @@ lazy val root =
     .settings(commonSettings: _*)
     .aggregate(Mnist, Common)
     .settings(
+      mainClass in Compile := Some("org.mo39.fmbh.ModgeLodge"),
       libraryDependencies ++= Seq(
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0", // Logging
         "ch.qos.logback" % "logback-classic" % "1.2.3" // Logging backend
@@ -23,8 +24,15 @@ lazy val root =
     )
 
 /* Docker image for Jupyter Notebook Env */
+import com.typesafe.sbt.packager.docker._
+
 enablePlugins(DockerPlugin)
-mainClass in Compile := Some("org.mo39.fmbh.ModgeLodge")
+enablePlugins(AshScriptPlugin) // openjdk:jre-alpine requires ash script to support bash execution
+enablePlugins(JavaAppPackaging)
+dockerBaseImage := "openjdk:jre-alpine"
+dockerCommands ++= Seq(
+  ExecCmd("CMD", "echo", "Hello, World from Docker")
+)
 
 ///////////////////////////////////////
 ////////////Project Common/////////////
