@@ -16,10 +16,10 @@ lazy val root =
     .settings(commonSettings: _*)
     .aggregate(Mnist, Common)
     .settings(
-      mainClass in Compile := Some("org.mo39.fmbh.ModgeLodge"),
       libraryDependencies ++= Seq(
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0", // Logging
-        "ch.qos.logback" % "logback-classic" % "1.2.3" // Logging backend
+        "ch.qos.logback" % "logback-classic" % "1.2.3", // Logging backend
+        "com.github.scopt" %% "scopt" % "3.7.0"
       )
     )
 
@@ -28,11 +28,18 @@ import com.typesafe.sbt.packager.docker._
 
 enablePlugins(DockerPlugin)
 enablePlugins(AshScriptPlugin) // openjdk:jre-alpine requires ash script to support bash execution
-enablePlugins(JavaAppPackaging)
-dockerBaseImage := "openjdk:jre-alpine"
-dockerCommands ++= Seq(
-  ExecCmd("CMD", "echo", "Hello, World from Docker")
+dockerCommands := Seq(
+  Cmd("FROM", "show0k/alpine-minimal-notebook"),
+  Cmd("WORKDIR", "/opt/docker"),
+  Cmd("USER", "root"),
+  Cmd("ADD", "--chown=root:root opt /opt"),
+  Cmd("RUN", "apk add --no-cache openjdk8-jre"),
+  Cmd("ENV", "JAVA_HOME /usr/lib/jvm/java-1.8-openjdk"),
+//  Cmd("EXPOSE", "8888/tcp"),
+//  Cmd("ENTRYPOINT", "jupyter notebook"),
+//  Cmd("CMD", "[]")
 )
+
 
 ///////////////////////////////////////
 ////////////Project Common/////////////
