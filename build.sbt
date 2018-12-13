@@ -23,23 +23,6 @@ lazy val root =
       )
     )
 
-/* Docker image for Jupyter Notebook Env */
-import com.typesafe.sbt.packager.docker._
-
-enablePlugins(DockerPlugin)
-enablePlugins(AshScriptPlugin) // openjdk:jre-alpine requires ash script to support bash execution
-dockerCommands := Seq(
-  Cmd("FROM", "show0k/alpine-minimal-notebook"),
-  Cmd("WORKDIR", "/opt/docker"),
-  Cmd("USER", "root"),
-  Cmd("ADD", "--chown=root:root opt /opt"),
-  Cmd("RUN", "apk add --no-cache openjdk8-jre"),
-  Cmd("ENV", "JAVA_HOME /usr/lib/jvm/java-1.8-openjdk"),
-//  Cmd("EXPOSE", "8888/tcp"),
-//  Cmd("ENTRYPOINT", "jupyter notebook"),
-//  Cmd("CMD", "[]")
-)
-
 
 ///////////////////////////////////////
 ////////////Project Common/////////////
