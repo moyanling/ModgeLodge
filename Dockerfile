@@ -119,6 +119,17 @@ RUN apt-get install -y openjdk-8-jre
 RUN wget www.scala-lang.org/files/archive/scala-2.12.7.deb && \
     dpkg -i scala-2.12.7.deb
 
+ENV SCALA_VERSION=2.12.7 ALMOND_VERSION=0.2.0
+RUN wget https://git.io/coursier && chmod +x coursier
+RUN ./coursier bootstrap \
+          -r jitpack \
+          -i user -I user:sh.almond:scala-kernel-api_$SCALA_VERSION:$ALMOND_VERSION \
+          sh.almond:scala-kernel_$SCALA_VERSION:$ALMOND_VERSION \
+          --sources --default=true \
+          -o almond
+RUN ./almond --install --jupyter-path=/opt/conda/share/jupyter/kernels
+
+#ENTRYPOINT jupyter notebook --allow-root --notebook-dir=/opt/ModgeLodge
 #RUN apt-get install -y build-essential python3.6 python3-pip && \
 #    python3 -m pip install pip --upgrade &&\
 #    pip3 install jupyter
