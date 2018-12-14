@@ -98,4 +98,30 @@
 #CMD []
 #
 # ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Not Working ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-# I am done with it. I gonna just get a FAT Ubuntu and install everything easily. I like it FAT.
+# I am fxxking done with it (╯‵□′)╯︵┻━┻. I am gonna just get a FAT Ubuntu and install everything easily. I love it FAT. Any question?!
+
+#RUN wget https://repo.anaconda.com/archive/Anaconda3-5.3.1-Linux-x86_64.sh
+#RUN yes yes | bash Anaconda3-5.3.1-Linux-x86_64.sh
+
+#USER root
+FROM jupyter/base-notebook
+
+USER root
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+#    add-apt-repository ppa:jonathonf/python-3.6 && \
+    add-apt-repository ppa:webupd8team/java && \
+    apt-get update
+
+
+#RUN apt-get install wget
+RUN apt-get install -y openjdk-8-jre
+RUN wget www.scala-lang.org/files/archive/scala-2.12.7.deb && \
+    dpkg -i scala-2.12.7.deb
+
+#RUN apt-get install -y build-essential python3.6 python3-pip && \
+#    python3 -m pip install pip --upgrade &&\
+#    pip3 install jupyter
+
+#RUN python3 --version
+#RUN jupyter -version
