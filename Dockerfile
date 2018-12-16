@@ -1,33 +1,18 @@
 FROM show0k/alpine-minimal-notebook
 
+################ ENV ##################
 USER root
+ENV LANG=C.UTF-8 \
+    JAVA_ALPINE_VERSION=8.181.13-r0 \
+    SCALA_VERSION=2.12.7 \
+    SCALA_HOME=/usr/share/scala \
+    ALMOND_VERSION=0.1.12
 
-################## JRE
-ENV LANG C.UTF-8
+################ JRE ##################
+RUN set -x && \
+    apk add --no-cache openjdk8-jre="$JAVA_ALPINE_VERSION"
 
-#RUN { \
-#		echo '#!/bin/sh'; \
-#		echo 'set -e'; \
-#		echo; \
-#		echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
-#	} > /usr/local/bin/docker-java-home \
-#	&& chmod +x /usr/local/bin/docker-java-home
-#ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
-#ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
-
-#ENV JAVA_VERSION 8u181
-ENV JAVA_ALPINE_VERSION 8.181.13-r0
-
-RUN set -x \
-	&& apk add --no-cache \
-		openjdk8-jre="$JAVA_ALPINE_VERSION"
-#&& [ "$JAVA_HOME" = "$(docker-java-home)" ]
-
-################ Scala
-ENV SCALA_VERSION=2.12.7 \
-    SCALA_HOME=/usr/share/scala
-
-# NOTE: bash is used by scala/scalac scripts, and it cannot be easily replaced with ash.
+############### Scala #################
 RUN apk add --no-cache --virtual=.build-dependencies wget ca-certificates && \
     apk add --no-cache bash curl jq && \
     cd "/tmp" && \
@@ -38,22 +23,25 @@ RUN apk add --no-cache --virtual=.build-dependencies wget ca-certificates && \
     mv "/tmp/scala-${SCALA_VERSION}/bin" "/tmp/scala-${SCALA_VERSION}/lib" "${SCALA_HOME}" && \
     ln -s "${SCALA_HOME}/bin/"* "/usr/bin/" && \
     apk del .build-dependencies && \
-    rm -rf "/tmp/"*
+    rm -rf "/tmp/"* && \
+    export PATH="/usr/local/sbt/bin:$PATH" && \
+    apk update && \
+    apk add ca-certificates wget tar && \
+    mkdir -p "/usr/local/sbt" && \
+    wget -qO - --no-check-certificate "https://cocl.us/sbt-0.13.16.tgz" | tar xz -C /usr/local/sbt --strip-components=1
 
-RUN export PATH="/usr/local/sbt/bin:$PATH" &&  apk update && apk add ca-certificates wget tar && mkdir -p "/usr/local/sbt" && wget -qO - --no-check-certificate "https://cocl.us/sbt-0.13.16.tgz" | tar xz -C /usr/local/sbt --strip-components=1 && sbt sbtVersion
-
-############## Scala Kernel
-ENV ALMOND_VERSION=0.1.12
-RUN curl -L -o coursier https://git.io/coursier && chmod +x coursier
-RUN ./coursier bootstrap \
+############### Kernel ################
+RUN curl -L -o coursier https://git.io/coursier && \
+    chmod +x coursier && \
+    ./coursier bootstrap \
         -i user -I user:sh.almond:scala-kernel-api_$SCALA_VERSION:$ALMOND_VERSION \
         sh.almond:scala-kernel_$SCALA_VERSION:$ALMOND_VERSION \
-        -o almond
-RUN ./almond --install --jupyter-path=/opt/conda/share/jupyter/kernels
+        -o almond && \
+    ./almond --install --jupyter-path=/opt/conda/share/jupyter/kernels --display-name="Scala $SCALA_VERSION" && \
+    rm coursier && \
+    rm almond
 
-
-##################
-ENTRYPOINT ["start-notebook.sh", "--notebook-dir=/opt/ModgeLodge"]
+USER jovyan
+RUN mkdir "/home/jovyan/.ivy2"
+ENTRYPOINT ["start-notebook.sh"]
 CMD []
-
-# 585MB

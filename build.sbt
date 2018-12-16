@@ -11,17 +11,7 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.12.7"
 )
 
-lazy val root =
-  (project in file("."))
-    .settings(commonSettings: _*)
-    .aggregate(Mnist, Common)
-    .settings(
-      libraryDependencies ++= Seq(
-        "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0", // Logging
-        "ch.qos.logback" % "logback-classic" % "1.2.3", // Logging backend
-        "com.github.scopt" %% "scopt" % "3.7.0"
-      )
-    )
+lazy val root = (project in file(".")).settings(commonSettings: _*)
 
 ///////////////////////////////////////
 ////////////Project Common/////////////
@@ -32,7 +22,7 @@ lazy val Common =
     .settings(
       name := "Common",
       libraryDependencies ++= Seq(
-        "org.scala-lang.modules" %% "scala-xml" % "1.1.1"
+        "org.scala-lang.modules" %% "scala-xml" % "1.1.1" // Scala XML module
       )
     )
 
@@ -56,27 +46,41 @@ lazy val Mnist =
 ///////////////////////////////////////
 ////////////////Tasks//////////////////
 ///////////////////////////////////////
-lazy val buildImage = taskKey[Unit]("Build the docker image for ModgeLodge")
-
-buildImage := {
+lazy val Docker = config("docker") describedAs "docker related tasks"
+lazy val build = taskKey[Unit]("Build the docker image for ModgeLodge")
+build in Docker := {
   import sys.process._
+  import java.nio.file.Path
+  import java.nio.file.Paths
+  /* Publish local Ivy repo for ModgeLodge */
+  publishLocal.value
+  /* Logging */
   val log = streams.value.log
-  val (pwd, n, v) = ("pwd".!!.trim, name.value.toLowerCase, version.value)
-  val cmd = s"docker build -t $n:$v ."
+  /* Handle Windows path */
+  val _f = (p: Path) => p.toString.replaceAll("\\\\", "/")
+  /* pwd, name and version */
+  val (pwd, n, v) = (System.getProperty("user.dir"), name.value.toLowerCase, version.value)
+  /* Notebook path */
+  val notebook = _f(Paths.get(pwd, "notebooks"))
+  /* User local Ivy repo path */
+  val userRepo = _f(Paths.get(System.getProperty("user.home"), ".ivy2"))
+  /* Docker build command */
+  val cmd = s"docker build -t $n:$v $pwd"
+  /* Execute */
   log.info(s"""Running "$cmd"""")
   cmd.! match {
     case 0 =>
       log.success("Successfully build docker image")
-      log.info("Run below command to start")
-      log.info(s"docker run -p 8888:8888 -v $pwd:/home/jovyan/ $n:$v")
+      log.info("Run below command to start. It would ask to share some folders for the first time.")
+      val portMapping = "-p 8888:8888"
+      val mountNotebook = s"-v $notebook:/home/jovyan/work"
+      val mountUserRepo = s"-v $userRepo:/home/jovyan/.ivy2"
+      log.info(s"docker run $portMapping $mountNotebook $mountUserRepo $n:$v")
     case _ => throw new Error("None zero exit code.")
   }
 }
-
-lazy val cleanUp =
-  taskKey[Unit]("Clean up. Stop and remove all containers. Remove all untagged images.")
-
-cleanUp := {
+/* Clean up docker containers and images */
+clean in Docker := {
   import sys.process._
   import scala.util.{ Failure, Success, Try }
   val log = streams.value.log
