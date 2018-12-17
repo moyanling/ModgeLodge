@@ -46,9 +46,9 @@ lazy val Mnist =
 ///////////////////////////////////////
 /////////////// Tasks /////////////////
 ///////////////////////////////////////
-lazy val Docker = config("docker") describedAs "docker related tasks"
+lazy val DockerConfig = config("docker") describedAs "docker related tasks"
 lazy val build = taskKey[Unit]("Build the docker image for ModgeLodge")
-inConfig(Docker) {
+inConfig(DockerConfig) {
   import sys.process._
   import java.nio.file.Path
   import java.nio.file.Paths
@@ -68,7 +68,7 @@ inConfig(Docker) {
   /* Tasks definitions */
   Seq(
     /* Build docker image */
-    build in Docker := {
+    build in DockerConfig := {
       publishLocal.value // Publish local Ivy repo for ModgeLodge
       val log = streams.value.log
       val (n, v) = (name.value.toLowerCase, version.value)
@@ -83,7 +83,8 @@ inConfig(Docker) {
       }
     },
     /* Run docker container */
-    run in Docker := {
+    run in DockerConfig := {
+      description := "Run the docker container for ModgeLodge"
       val log = streams.value.log
       val (n, v) = (name.value.toLowerCase, version.value)
       val dockerRunCmd = s"docker run $portMapping $mountNotebook $mountUserRepo $n:$v"
@@ -96,22 +97,24 @@ inConfig(Docker) {
       }
     },
     /* Clean up docker containers and images */
-    clean in Docker := {
+    clean in DockerConfig := {
+      description := "Clean up. Stop running containers, remove all containers and remove all untagged images."
       val log = streams.value.log
-      /* Run a tuple of command and log a message if success */
-      def run(t: (String, String), msg: String): Unit = {
+      /* Run a tuple of command and log a message if success. */
+      def _run(t: (String, String), msg: String): Unit = {
         val (cmd1, cmd2) = t
-        val r = cmd1.!! // Result of the first command
-        if (r.nonEmpty) { // Might have no result
-          Try(s"$cmd2 $r".!!) match {
+        val result = cmd1.!!
+        /* Check if the result of the first command is empty */
+        if (result.nonEmpty) {
+          Try(s"$cmd2 $result".!!) match {
             case Success(_) => log.success(msg)
             case Failure(e) => log.error(e.getMessage)
           }
         }
       }
-      run("docker ps -q" -> "docker kill", "Stopped running containers")
-      run("docker ps -aq" -> "docker rm", "Removed all containers")
-      run("docker images -q --filter \"dangling=true\"" -> "docker rmi",
+      _run("docker ps -q" -> "docker kill", "Stopped running containers")
+      _run("docker ps -aq" -> "docker rm", "Removed all containers")
+      _run("docker images -q --filter \"dangling=true\"" -> "docker rmi",
           "Removed all untagged images")
     }
   )
