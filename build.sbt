@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
 lazy val root = (project in file(".")).settings(commonSettings: _*)
 
 ///////////////////////////////////////
-////////////Project Common/////////////
+/////////// Project Common ////////////
 ///////////////////////////////////////
 lazy val Common =
   (project in file("Common"))
@@ -27,7 +27,7 @@ lazy val Common =
     )
 
 ///////////////////////////////////////
-////////////Project Mnist//////////////
+/////////// Project Mnist /////////////
 ///////////////////////////////////////
 lazy val Mnist =
   (project in file("Mnist"))
@@ -44,58 +44,75 @@ lazy val Mnist =
     )
 
 ///////////////////////////////////////
-////////////////Tasks//////////////////
+/////////////// Tasks /////////////////
 ///////////////////////////////////////
 lazy val Docker = config("docker") describedAs "docker related tasks"
 lazy val build = taskKey[Unit]("Build the docker image for ModgeLodge")
-build in Docker := {
+inConfig(Docker) {
   import sys.process._
   import java.nio.file.Path
   import java.nio.file.Paths
-  /* Publish local Ivy repo for ModgeLodge */
-  publishLocal.value
-  /* Logging */
-  val log = streams.value.log
+  import scala.util.{ Failure, Success, Try }
   /* Handle Windows path */
   val _f = (p: Path) => p.toString.replaceAll("\\\\", "/")
-  /* pwd, name and version */
-  val (pwd, n, v) = (System.getProperty("user.dir"), name.value.toLowerCase, version.value)
+  /* Current working directory */
+  val pwd = System.getProperty("user.dir")
   /* Notebook path */
   val notebook = _f(Paths.get(pwd, "notebooks"))
   /* User local Ivy repo path */
   val userRepo = _f(Paths.get(System.getProperty("user.home"), ".ivy2"))
-  /* Docker build command */
-  val cmd = s"docker build -t $n:$v $pwd"
-  /* Execute */
-  log.info(s"""Running "$cmd"""")
-  cmd.! match {
-    case 0 =>
-      log.success("Successfully build docker image")
-      log.info("Run below command to start. It would ask to share some folders for the first time.")
-      val portMapping = "-p 8888:8888"
-      val mountNotebook = s"-v $notebook:/home/jovyan/work"
-      val mountUserRepo = s"-v $userRepo:/home/jovyan/.ivy2"
-      log.info(s"docker run $portMapping $mountNotebook $mountUserRepo $n:$v")
-    case _ => throw new Error("None zero exit code.")
-  }
-}
-/* Clean up docker containers and images */
-clean in Docker := {
-  import sys.process._
-  import scala.util.{ Failure, Success, Try }
-  val log = streams.value.log
-  /* Run a tuple of command and log a message if success */
-  def run(t: (String, String), msg: String): Unit = {
-    val (cmd1, cmd2) = t
-    val r = cmd1.!! // Result of the first command
-    if (r.nonEmpty) { // Might have no result
-      Try(s"$cmd2 $r".!!) match {
-        case Success(_) => log.success(msg)
-        case Failure(e) => log.error(e.getMessage)
+  /* Command to run the docker image. Maps the port, mounts the notebooks and Ivy repo */
+  val portMapping = "-p 8888:8888"
+  val mountNotebook = s"-v $notebook:/home/jovyan/work"
+  val mountUserRepo = s"-v $userRepo:/home/jovyan/.ivy2"
+  /* Tasks definitions */
+  Seq(
+    /* Build docker image */
+    build in Docker := {
+      publishLocal.value // Publish local Ivy repo for ModgeLodge
+      val log = streams.value.log
+      val (n, v) = (name.value.toLowerCase, version.value)
+      val dockerBuildCmd = s"docker build -t $n:$v $pwd" // Docker build command
+      log.info(s"""Running "$dockerBuildCmd"""")
+      dockerBuildCmd.! match {
+        case 0 =>
+          log.success(
+            s"Successfully build docker image. Run `sbt docker:run` to start the container."
+          )
+        case _ => throw new Error("None zero exit code.")
       }
+    },
+    /* Run docker container */
+    run in Docker := {
+      val log = streams.value.log
+      val (n, v) = (name.value.toLowerCase, version.value)
+      val dockerRunCmd = s"docker run $portMapping $mountNotebook $mountUserRepo $n:$v"
+      log.info(s"""Running "$dockerRunCmd"""")
+      Try(dockerRunCmd.!!) match {
+        case Failure(e) =>
+          log.error("Try `sbt docker:clean`, restart your docker and run it again.")
+          log.error(e.getMessage)
+        case Success(_) =>
+      }
+    },
+    /* Clean up docker containers and images */
+    clean in Docker := {
+      val log = streams.value.log
+      /* Run a tuple of command and log a message if success */
+      def run(t: (String, String), msg: String): Unit = {
+        val (cmd1, cmd2) = t
+        val r = cmd1.!! // Result of the first command
+        if (r.nonEmpty) { // Might have no result
+          Try(s"$cmd2 $r".!!) match {
+            case Success(_) => log.success(msg)
+            case Failure(e) => log.error(e.getMessage)
+          }
+        }
+      }
+      run("docker ps -q" -> "docker kill", "Stopped running containers")
+      run("docker ps -aq" -> "docker rm", "Removed all containers")
+      run("docker images -q --filter \"dangling=true\"" -> "docker rmi",
+          "Removed all untagged images")
     }
-  }
-  run("docker ps -q" -> "docker kill", "Stopped running containers")
-  run("docker ps -aq" -> "docker rm", "Removed all containers")
-  run("docker images -q --filter \"dangling=true\"" -> "docker rmi", "Removed all untagged images")
+  )
 }
