@@ -1,23 +1,18 @@
 
-#####=== Scala ===#####
+### Scala ###
 *.class
 *.log
 
-#####=== SBT ===#####
-dist/*
+### SBT ###
 target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
-.history
-.cache
-.lib/
 
-#####=== macOS ===#####
+### macOS ###
 .DS_Store
 
-#####=== JetBrains ===#####
+### JetBrains ###
 .idea
 *.iml
 
+### JupyterNotebook ###
+*/.ipynb_checkpoints/*
+.local/
