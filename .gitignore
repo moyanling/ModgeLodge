@@ -14,5 +14,5 @@ target/
 *.iml
 
 ### JupyterNotebook ###
-*/.ipynb_checkpoints/*
+.ipynb_checkpoints/
 .local/

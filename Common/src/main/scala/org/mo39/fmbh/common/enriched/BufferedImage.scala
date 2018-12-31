@@ -38,7 +38,7 @@ case class BufferedImage(img: image.BufferedImage) {
     */
   def toBase64Url: String = {
     val os: ByteArrayOutputStream = new ByteArrayOutputStream()
-    ImageIO.write(img, "jpg", os)
+    ImageIO.write(img, "JPEG", os)
     "data:image/jpeg;base64," + Base64.getEncoder.encodeToString(os.toByteArray)
   }
 

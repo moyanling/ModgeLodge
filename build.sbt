@@ -11,7 +11,10 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.12.7"
 )
 
-lazy val root = (project in file(".")).settings(commonSettings: _*)
+lazy val root = (project in file("."))
+  .settings(commonSettings: _*)
+  .dependsOn(Common)
+  .aggregate(Common)
 
 ///////////////////////////////////////
 /////////// Project Common ////////////
@@ -22,7 +25,11 @@ lazy val Common =
     .settings(
       name := "Common",
       libraryDependencies ++= Seq(
-        "org.scala-lang.modules" %% "scala-xml" % "1.1.1" // Scala XML module
+        "org.scala-lang.modules" %% "scala-xml" % "1.1.1", // Scala XML module
+        "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0", // Logging
+        "ch.qos.logback" % "logback-classic" % "1.2.3", // Logging backend
+        "sh.almond" % "scala-kernel-api_2.12.7" % "0.1.12", // Integration with Scala Kernel API
+//        "com.twelvemonkeys.imageio" % "imageio-core" % "3.3.2",
       )
     )
 
@@ -32,14 +39,13 @@ lazy val Common =
 lazy val Mnist =
   (project in file("Mnist"))
     .dependsOn(Common)
+    .aggregate(Common)
     .settings(commonSettings: _*)
     .settings(
       name := "Mnist",
       libraryDependencies ++= Seq(
         "org.deeplearning4j" % "deeplearning4j-core" % "1.0.0-beta3", // DeepLearning for Java
-        "org.nd4j" % "nd4j-native-platform" % "1.0.0-beta3", // N-Dimensional Array support for DeepLearning backend
-        "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0", // Logging
-        "ch.qos.logback" % "logback-classic" % "1.2.3" // Logging backend
+        "org.nd4j" % "nd4j-native-platform" % "1.0.0-beta3" // N-Dimensional Array support for DeepLearning backend
       )
     )
 
@@ -115,7 +121,7 @@ inConfig(DockerConfig) {
       _run("docker ps -q" -> "docker kill", "Stopped running containers")
       _run("docker ps -aq" -> "docker rm", "Removed all containers")
       _run("docker images -q --filter \"dangling=true\"" -> "docker rmi",
-          "Removed all untagged images")
+           "Removed all untagged images")
     }
   )
 }
