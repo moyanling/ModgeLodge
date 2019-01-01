@@ -12,6 +12,7 @@ import org.deeplearning4j.nn.conf.layers.{ DenseLayer, OutputLayer }
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.nn.weights.WeightInit
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener
+import org.mo39.fmbh.common.JupyterMLApp
 import org.nd4j.evaluation.classification.Evaluation
 import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.api.ndarray.INDArray
@@ -20,14 +21,55 @@ import org.nd4j.linalg.learning.config.Sgd
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction
 import org.mo39.fmbh.common.enriched.BufferedImage._
 import org.mo39.fmbh.common.ml._
-import org.mo39.fmbh.common.util.JupyterDisplay
 
-object Mnist extends App {
+object Mnist extends JupyterMLApp {
   val mnist: Mnist = new Mnist()
-  val model: MultiLayerNetwork = mnist.buildModel
-  model.fit(mnist.loadTrainSet)
-  model.save(new File("models/deeplearning4j.Mnist"))
-  mnist.accuracy(model, mnist.loadTestSet)
+  val file = new File("models/deeplearning4j.Mnist")
+  val model: MultiLayerNetwork =
+    if (file.exists()) MultiLayerNetwork.load(file, true)
+    else {
+      val model: MultiLayerNetwork = mnist.buildModel()
+      val trainSet = mnist.loadTrainSet()
+      (0 to mnist.numEpochs).foreach { _ =>
+        model.fit(trainSet)
+      }
+      model.save(file)
+      model
+    }
+  mnist.accuracy(model, mnist.loadTestSet())
+
+  override def featureToXml(a: Any): xml.Elem = {
+    require(a.isInstanceOf[INDArray])
+    val src = mkBase64ImgUrl(a.asInstanceOf[INDArray])
+    <img src={src}></img>
+  }
+
+  override def labelToXml(a: Any): xml.Elem = {
+    require(a.isInstanceOf[INDArray])
+    val label = a.asInstanceOf[INDArray]
+    require(label.rank() == 2)
+    require(label.rows() == 1)
+    require(label.columns() == 10)
+    val num = (0 to 9).find(i => label.getInt(0, i) != 0).get
+    <b>{num}</b>
+  }
+
+  private def mkBase64ImgUrl(feature: INDArray): String = {
+    // Check array size
+    require(feature.rank() == 2)
+    require(feature.rows() == 1)
+    require(feature.columns() == 28 * 28)
+    // Convert to 28 * 28 array
+    val arr = feature
+      .reshape(28, 28)
+      .toDoubleMatrix
+      .map(_.map(v => (v * 255).toInt))
+    // Build BufferedImage and get Base64 Url
+    new BufferedImage(28, 28, BufferedImage.TYPE_BYTE_GRAY)
+      .from(arr)
+      .toBase64Url
+  }
+
 }
 
 case class Mnist(
@@ -65,16 +107,15 @@ case class Mnist(
     trainSetSize: Int = MnistDataFetcher.NUM_EXAMPLES,
     @Config(description = "The size of testing dataset")
     testSetSize: Int = MnistDataFetcher.NUM_EXAMPLES_TEST
-) extends LazyLogging
-    with JupyterDisplay {
+) extends LazyLogging {
 
   // download and load the MNIST images as tensors
-  def loadTrainSet: MnistDataSetIterator =
-    new MnistDataSetIterator(batchSize, trainSetSize, false, true, true, seed)
-  def loadTestSet: MnistDataSetIterator =
-    new MnistDataSetIterator(batchSize, testSetSize, false, false, true, seed)
+  def loadTrainSet(): MnistDataSetIterator =
+    new MnistDataSetIterator(batchSize, trainSetSize, false, true, false, seed)
+  def loadTestSet(): MnistDataSetIterator =
+    new MnistDataSetIterator(batchSize, testSetSize, false, false, false, seed)
 
-  def buildModel: MultiLayerNetwork = {
+  def buildModel(): MultiLayerNetwork = {
     // define the neural network architecture
     val conf: MultiLayerConfiguration = new NeuralNetConfiguration.Builder()
       .seed(seed)
@@ -111,40 +152,6 @@ case class Mnist(
       evaluator.eval(dataSet.getLabels, output)
     }
     logger.info(s"Accuracy = ${evaluator.accuracy()}")
-  }
-
-  // display ------------------------------------------------------------
-
-  override def featureToXml(a: Any): xml.Elem = {
-    require(a.isInstanceOf[INDArray])
-    val src = mkBase64ImgUrl(a.asInstanceOf[INDArray])
-    <img src={src}></img>
-  }
-
-  override def labelToXml(a: Any): xml.Elem = {
-    require(a.isInstanceOf[INDArray])
-    val label = a.asInstanceOf[INDArray]
-    require(label.rank() == 2)
-    require(label.rows() == 1)
-    require(label.columns() == 10)
-    val num = (0 to 9).find(i => label.getInt(0, i) != 0).get
-    <b>{num}</b>
-  }
-
-  private def mkBase64ImgUrl(feature: INDArray): String = {
-    // Check array size
-    require(feature.rank() == 2)
-    require(feature.rows() == 1)
-    require(feature.columns() == 28 * 28)
-    // Convert to 28 * 28 array
-    val arr = feature
-      .reshape(28, 28)
-      .toDoubleMatrix
-      .map(_.map(v => (v * 255).toInt))
-    // Build BufferedImage and get Base64 Url
-    new BufferedImage(28, 28, BufferedImage.TYPE_BYTE_GRAY)
-      .from(arr)
-      .toBase64Url
   }
 
 }

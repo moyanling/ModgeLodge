@@ -16,3 +16,9 @@ target/
 ### JupyterNotebook ###
 .ipynb_checkpoints/
 .local/
+
+### Project ###
+models/*
+
+# exception to the rule
+!models/.gitkeep

@@ -28,8 +28,7 @@ lazy val Common =
         "org.scala-lang.modules" %% "scala-xml" % "1.1.1", // Scala XML module
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0", // Logging
         "ch.qos.logback" % "logback-classic" % "1.2.3", // Logging backend
-        "sh.almond" % "scala-kernel-api_2.12.7" % "0.1.12", // Integration with Scala Kernel API
-//        "com.twelvemonkeys.imageio" % "imageio-core" % "3.3.2",
+        "sh.almond" % "scala-kernel-api_2.12.7" % "0.1.12" // Integration with Scala Kernel API
       )
     )
 
@@ -63,13 +62,16 @@ inConfig(DockerConfig) {
   val _f = (p: Path) => p.toString.replaceAll("\\\\", "/")
   /* Current working directory */
   val pwd = System.getProperty("user.dir")
+  /* Model path */
+  val models = _f(Paths.get(pwd, "models"))
   /* Notebook path */
-  val notebook = _f(Paths.get(pwd, "notebooks"))
+  val notebooks = _f(Paths.get(pwd, "notebooks"))
   /* User local Ivy repo path */
   val userRepo = _f(Paths.get(System.getProperty("user.home"), ".ivy2"))
   /* Command to run the docker image. Maps the port, mounts the notebooks and Ivy repo */
   val portMapping = "-p 8888:8888"
-  val mountNotebook = s"-v $notebook:/home/jovyan/work"
+  val mountModels = s"-v $models:/home/jovyan/work"
+  val mountNotebooks = s"-v $notebooks:/home/jovyan/work"
   val mountUserRepo = s"-v $userRepo:/home/jovyan/.ivy2"
   /* Tasks definitions */
   Seq(
@@ -93,7 +95,7 @@ inConfig(DockerConfig) {
       description := "Run the docker container for ModgeLodge"
       val log = streams.value.log
       val (n, v) = (name.value.toLowerCase, version.value)
-      val dockerRunCmd = s"docker run $portMapping $mountNotebook $mountUserRepo $n:$v"
+      val dockerRunCmd = s"docker run $portMapping $mountModels $mountNotebooks $mountUserRepo $n:$v"
       log.info(s"""Running "$dockerRunCmd"""")
       Try(dockerRunCmd.!!) match {
         case Failure(e) =>
