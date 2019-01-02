@@ -70,8 +70,8 @@ inConfig(DockerConfig) {
   val userRepo = _f(Paths.get(System.getProperty("user.home"), ".ivy2"))
   /* Command to run the docker image. Maps the port, mounts the notebooks and Ivy repo */
   val portMapping = "-p 8888:8888"
-  val mountModels = s"-v $models:/home/jovyan/work"
-  val mountNotebooks = s"-v $notebooks:/home/jovyan/work"
+  val mountModels = s"-v $models:/home/jovyan/work/models"
+  val mountNotebooks = s"-v $notebooks:/home/jovyan/work/notebooks"
   val mountUserRepo = s"-v $userRepo:/home/jovyan/.ivy2"
   /* Tasks definitions */
   Seq(
