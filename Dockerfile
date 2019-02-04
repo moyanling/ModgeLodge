@@ -23,7 +23,6 @@ RUN apt-get update && \
         sh.almond:scala-kernel_$SCALA_VERSION:$ALMOND_VERSION \
         -o almond && \
     ./almond --install --jupyter-path=/opt/conda/share/jupyter/kernels --display-name="Scala $SCALA_VERSION" && \
-    rm coursier && \
     rm almond
 
 USER jovyan
