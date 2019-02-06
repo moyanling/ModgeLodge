@@ -49,6 +49,13 @@ lazy val Mnist =
     )
 
 ///////////////////////////////////////
+///////////// Zeppelin ////////////////
+///////////////////////////////////////
+lazy val Zeppelin = config("Zeppelin") describedAs "Zeppelin related tasks"
+
+
+
+///////////////////////////////////////
 /////////////// Tasks /////////////////
 ///////////////////////////////////////
 lazy val DockerConfig = config("docker") describedAs "docker related tasks"
@@ -115,7 +122,7 @@ inConfig(DockerConfig) {
         /* Check if the result of the first command is empty */
         if (result.nonEmpty) {
           Try(s"$cmd2 $result".!!) match {
-            case Success(_) => log.success(msg)
+            case Success(s) => log.success(s)
             case Failure(e) => log.error(e.getMessage)
           }
         }
