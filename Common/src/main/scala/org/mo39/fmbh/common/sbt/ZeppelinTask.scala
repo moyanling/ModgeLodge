@@ -3,12 +3,23 @@ package org.mo39.fmbh.common.sbt
 import sys.process._
 import scala.util.{ Failure, Success, Try }
 
-case class ZeppelinConfig(
+case class ZeppelinTask(
     name: String = "",
     version: String = "",
     logOnSuccess: String => Unit = _ => Unit,
     logOnFailure: String => Unit = _ => Unit
 ) {
+
+  val image = "apache/zeppelin"
+  val tag = "0.8.1"
+  val mountLogs = "-v $PWD/logs:/logs"
+  val mountMaven = "-v $PWD/notebook:/notebook"
+  val mountNotebook = "-v $PWD/notebook:/notebook"
+  val runContainerCmd = s"docker run -p 8080:8080 $mountLogs $mountMaven $mountNotebook $image:$tag"
+
+  def run(): Unit = {
+    runContainerCmd.!!
+  }
 
   def clean(): Unit = {
     _run(stopRunningContainers)

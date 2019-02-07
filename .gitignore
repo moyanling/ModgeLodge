@@ -21,4 +21,4 @@ target/
 models/*
 
 # exception to the rule
-!models/.gitkeep
+!.gitkeep

@@ -1,0 +1,192 @@
+{
+  "paragraphs": [
+    {
+      "title": "Loss Function",
+      "text": "Loss function is a **criteria** defined as a function to describe the difference between your prediction and the real result.",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-08 21:52:47.142",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eLoss function is a \u003cstrong\u003ecriteria\u003c/strong\u003e defined as a function to describe the difference between your prediction and the real result.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1549584436049_1829660086",
+      "id": "20190208-000716_657408795",
+      "dateCreated": "2019-02-08 00:07:16.050",
+      "dateStarted": "2019-02-08 21:52:08.284",
+      "dateFinished": "2019-02-08 21:52:08.301",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "Suppose the below table is the relationship between variable X, Predited Y and result Y\n\nX | PredictedY | ActualY | Difference \n- | ---------- | ------- | ---------\n1 | 13       | 13     | 0\n2 | 16       | 14     | 2\n3 | 19       | 20     | -1\n4 | 22       | 21     | 1\n5 | 25       | 25     | 0\n6 | 28       | 30     | -2",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-08 00:11:16.809",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eSuppose the below table is the relationship between variable X, Predited Y and result Y\u003c/p\u003e\n\u003ctable\u003e\n  \u003cthead\u003e\n    \u003ctr\u003e\n      \u003cth\u003eX \u003c/th\u003e\n      \u003cth\u003ePredictedY \u003c/th\u003e\n      \u003cth\u003eActualY \u003c/th\u003e\n      \u003cth\u003eDifference\u003c/th\u003e\n    \u003c/tr\u003e\n  \u003c/thead\u003e\n  \u003ctbody\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e1 \u003c/td\u003e\n      \u003ctd\u003e13 \u003c/td\u003e\n      \u003ctd\u003e13 \u003c/td\u003e\n      \u003ctd\u003e0\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e2 \u003c/td\u003e\n      \u003ctd\u003e16 \u003c/td\u003e\n      \u003ctd\u003e14 \u003c/td\u003e\n      \u003ctd\u003e2\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e3 \u003c/td\u003e\n      \u003ctd\u003e19 \u003c/td\u003e\n      \u003ctd\u003e20 \u003c/td\u003e\n      \u003ctd\u003e-1\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e4 \u003c/td\u003e\n      \u003ctd\u003e22 \u003c/td\u003e\n      \u003ctd\u003e21 \u003c/td\u003e\n      \u003ctd\u003e1\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e5 \u003c/td\u003e\n      \u003ctd\u003e25 \u003c/td\u003e\n      \u003ctd\u003e25 \u003c/td\u003e\n      \u003ctd\u003e0\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003ctd\u003e6 \u003c/td\u003e\n      \u003ctd\u003e28 \u003c/td\u003e\n      \u003ctd\u003e30 \u003c/td\u003e\n      \u003ctd\u003e-2\u003c/td\u003e\n    \u003c/tr\u003e\n  \u003c/tbody\u003e\n\u003c/table\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1549584580483_-1896284649",
+      "id": "20190208-000940_483896591",
+      "dateCreated": "2019-02-08 00:09:40.483",
+      "dateStarted": "2019-02-08 00:11:16.866",
+      "dateFinished": "2019-02-08 00:11:16.876",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "In order to describe the difference between you prediction and the actual result, a simple loss function could be `math.abs(PredictedY - ActualY)`, whoes **sum** for all the **x** is 6. Obviously, a smaller sum means a more accurate prediction.",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-08 00:11:16.965",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eIn order to describe the difference between you prediction and the actual result, a simple loss function could be \u003ccode\u003emath.abs(PredictedY - ActualY)\u003c/code\u003e, whoes \u003cstrong\u003esum\u003c/strong\u003e for all the \u003cstrong\u003ex\u003c/strong\u003e is 6. Obviously, a smaller sum means a more accurate prediction.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1549584531461_1462801432",
+      "id": "20190208-000851_213837793",
+      "dateCreated": "2019-02-08 00:08:51.461",
+      "dateStarted": "2019-02-08 00:11:17.047",
+      "dateFinished": "2019-02-08 00:11:17.058",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "Some common Loss Function are:\n1. 0 - 1 loss function: `if (PredictedY \u003d\u003d ActualY) 1 else 0`\n2. absolute loss function: `math.abs(PredictedY - ActualY)`\n3. quadratic loss function: `math.pow(PredictedY - ActualY, 2)`",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-08 00:11:17.279",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eSome common Loss Function are:\u003cbr/\u003e1. 0 - 1 loss function: \u003ccode\u003eif (PredictedY \u003d\u003d ActualY) 1 else 0\u003c/code\u003e\u003cbr/\u003e2. absolute loss function: \u003ccode\u003emath.abs(PredictedY - ActualY)\u003c/code\u003e\u003cbr/\u003e3. quadratic loss function: \u003ccode\u003emath.pow(PredictedY - ActualY, 2)\u003c/code\u003e\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1549584606902_-1354047431",
+      "id": "20190208-001006_1560856212",
+      "dateCreated": "2019-02-08 00:10:06.902",
+      "dateStarted": "2019-02-08 00:11:17.323",
+      "dateFinished": "2019-02-08 00:11:17.331",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1549584677279_1951707646",
+      "id": "20190208-001117_755818328",
+      "dateCreated": "2019-02-08 00:11:17.279",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "/wiki/Loss Function",
+  "id": "2E2DNDUQ8",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {
+    "md:shared_process": []
+  },
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}
