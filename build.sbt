@@ -8,7 +8,7 @@ resolvers in ThisBuild ++= Seq(
 lazy val commonSettings = Seq(
   organization := "org.mo39.fmbh",
   version := "0.1-SNAPSHOT",
-  scalaVersion := "2.12.7"
+  scalaVersion := "2.11.8"
 )
 
 lazy val root = (project in file("."))
@@ -27,8 +27,7 @@ lazy val Common =
       libraryDependencies ++= Seq(
         "org.scala-lang.modules" %% "scala-xml" % "1.1.1", // Scala XML module
         "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0", // Logging
-        "ch.qos.logback" % "logback-classic" % "1.2.3", // Logging backend
-        "sh.almond" % "scala-kernel-api_2.12.7" % "0.1.12" // Integration with Scala Kernel API
+        "ch.qos.logback" % "logback-classic" % "1.2.3" // Logging backend
       )
     )
 
@@ -68,9 +67,9 @@ val notebook: Path = pwd.resolve("notebook")
 /* User local maven repo path */
 val userMaven: Path = userHome.resolve(".m2").resolve("repository")
 val image = "apache/zeppelin"
-val tag = "0.8.1"
+val tag = "0.8.0" // Zeppelin does not have latest tag and 0.8.1 does not work
 val portMapping = "-p 8080:8080"
-val mountLogs = s"-v ${_f(models)}:/logs"
+val mountLogs = s"-v ${_f(models)}:/zeppelin/logs"
 val mountMaven = s"-v ${_f(userMaven)}:/zeppelin/local-repo"
 val mountNotebook = s"-v ${_f(notebook)}:/zeppelin/notebook"
 val runZeppelin = s"docker run -d $portMapping $mountLogs $mountMaven $mountNotebook $image:$tag"
@@ -81,13 +80,14 @@ inConfig(Zeppelin) {
     /* Run docker container */
     run in Zeppelin := {
       description := "Run the Zeppelin docker container for ModgeLodge"
+      publishM2.value
       val log = streams.value.log
       log.info(runZeppelin)
       runZeppelin.!!(log)
       log.success("Zeppelin started at http://localhost:8080")
     },
      /* Clean up docker containers and images */
-     clean in DockerConfig := {
+     clean in Zeppelin := {
        description := "Clean up. Stop running containers, remove all containers and remove all untagged images."
        val log = streams.value.log
        /* Run a tuple of command and log a message if success. */
@@ -96,7 +96,7 @@ inConfig(Zeppelin) {
          /* Check if the result of the first command is empty */
          if (result.nonEmpty) {
            Try(s"$cmd2 $result".!!) match {
-             case Success(s) => log.success(s)
+             case Success(_) => log.success(msg)
              case Failure(e) => log.error(e.getMessage)
            }
          }
@@ -106,86 +106,5 @@ inConfig(Zeppelin) {
        _run("docker images -q --filter \"dangling=true\"", "docker rmi",
              "Removed all untagged images")
      }
-  )
-}
-
-///////////////////////////////////////
-/////////////// Tasks /////////////////
-///////////////////////////////////////
-lazy val DockerConfig = config("docker") describedAs "docker related tasks"
-lazy val build = taskKey[Unit]("Build the docker image for ModgeLodge")
-inConfig(DockerConfig) {
-  import java.nio.file.{ Path, Paths }
-
-  import scala.util.{ Failure, Success, Try }
-  import sys.process._
-  /* Handle Windows path */
-  val _f = (p: Path) => p.toString.replaceAll("\\\\", "/")
-  /* Current working directory */
-  val pwd = System.getProperty("user.dir")
-  /* Model path */
-  val models = _f(Paths.get(pwd, "models"))
-  /* Notebook path */
-  val notebook = _f(Paths.get(pwd, "notebook"))
-  /* User local Ivy repo path */
-  val userRepo = _f(Paths.get(System.getProperty("user.home"), ".ivy2"))
-  /* Command to run the docker image. Maps the port, mounts the notebooks and Ivy repo */
-  val portMapping = "-p 8888:8888"
-  val mountModels = s"-v $models:/home/jovyan/work/models"
-  val mountNotebooks = s"-v $notebook:/home/jovyan/work/notebook"
-  val mountUserRepo = s"-v $userRepo:/home/jovyan/.ivy2"
-  /* Tasks definitions */
-  Seq(
-    /* Build docker image */
-    build in DockerConfig := {
-      publishLocal.value // Publish local Ivy repo for ModgeLodge
-      val log = streams.value.log
-      val (n, v) = (name.value.toLowerCase, version.value)
-      val dockerBuildCmd = s"docker build -t $n:$v $pwd" // Docker build command
-      log.info(s"""Running "$dockerBuildCmd"""")
-      dockerBuildCmd.! match {
-        case 0 =>
-          log.success(
-            s"Successfully build docker image. Run `sbt docker:run` to start the container."
-          )
-        case _ => throw new Error("None zero exit code.")
-      }
-    },
-    /* Run docker container */
-    run in DockerConfig := {
-      description := "Run the docker container for ModgeLodge"
-      val log = streams.value.log
-      val (n, v) = (name.value.toLowerCase, version.value)
-      val dockerRunCmd =
-        s"docker run $portMapping $mountModels $mountNotebooks $mountUserRepo $n:$v"
-      log.info(s"""Running "$dockerRunCmd"""")
-      Try(dockerRunCmd.!!) match {
-        case Failure(e) =>
-          log.error("Try `sbt docker:clean`, restart your docker and run it again.")
-          log.error(e.getMessage)
-        case Success(_) =>
-      }
-    },
-    /* Clean up docker containers and images */
-    clean in DockerConfig := {
-      description := "Clean up. Stop running containers, remove all containers and remove all untagged images."
-      val log = streams.value.log
-      /* Run a tuple of command and log a message if success. */
-      def _run(t: (String, String), msg: String): Unit = {
-        val (cmd1, cmd2) = t
-        val result = cmd1.!!
-        /* Check if the result of the first command is empty */
-        if (result.nonEmpty) {
-          Try(s"$cmd2 $result".!!) match {
-            case Success(s) => log.success(s)
-            case Failure(e) => log.error(e.getMessage)
-          }
-        }
-      }
-      _run("docker ps -q" -> "docker kill", "Stopped running containers")
-      _run("docker ps -aq" -> "docker rm", "Removed all containers")
-      _run("docker images -q --filter \"dangling=true\"" -> "docker rmi",
-           "Removed all untagged images")
-    }
   )
 }

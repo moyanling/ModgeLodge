@@ -10,7 +10,7 @@ object Reflect {
     * @tparam T The TypeTag of the specified Annotation
     * @return A list of case accessors where each is associated with a list of properties
     */
-  def getCaseAccessorMetaData[T: TypeTag](any: Any): List[(String, List[(String, String)])] = {
+  def getCaseAccessorMetaData[T: TypeTag](any: AnyRef): List[(String, List[(String, String)])] = {
     val clazz = any.getClass
     val ofTypeT: Annotation => Boolean = (a: Annotation) => a.tree.tpe =:= typeOf[T]
     /* Find the case accessors that are annotated with T and its properties */

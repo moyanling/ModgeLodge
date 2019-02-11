@@ -2,9 +2,9 @@
   "paragraphs": [
     {
       "title": "Loss Function",
-      "text": "Loss function is a **criteria** defined as a function to describe the difference between your prediction and the real result.",
+      "text": "Loss function is a **criteria** defined as a function to describe the difference between the prediction and the real result.",
       "user": "anonymous",
-      "dateUpdated": "2019-02-08 21:52:47.142",
+      "dateUpdated": "2019-02-09 23:29:00.886",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -30,7 +30,7 @@
         "msg": [
           {
             "type": "HTML",
-            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eLoss function is a \u003cstrong\u003ecriteria\u003c/strong\u003e defined as a function to describe the difference between your prediction and the real result.\u003c/p\u003e\n\u003c/div\u003e"
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eLoss function is a \u003cstrong\u003ecriteria\u003c/strong\u003e defined as a function to describe the difference between the prediction and the real result.\u003c/p\u003e\n\u003c/div\u003e"
           }
         ]
       },
@@ -38,15 +38,15 @@
       "jobName": "paragraph_1549584436049_1829660086",
       "id": "20190208-000716_657408795",
       "dateCreated": "2019-02-08 00:07:16.050",
-      "dateStarted": "2019-02-08 21:52:08.284",
-      "dateFinished": "2019-02-08 21:52:08.301",
+      "dateStarted": "2019-02-09 23:29:00.886",
+      "dateFinished": "2019-02-09 23:29:03.547",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "Suppose the below table is the relationship between variable X, Predited Y and result Y\n\nX | PredictedY | ActualY | Difference \n- | ---------- | ------- | ---------\n1 | 13       | 13     | 0\n2 | 16       | 14     | 2\n3 | 19       | 20     | -1\n4 | 22       | 21     | 1\n5 | 25       | 25     | 0\n6 | 28       | 30     | -2",
       "user": "anonymous",
-      "dateUpdated": "2019-02-08 00:11:16.809",
+      "dateUpdated": "2019-02-09 20:46:25.340",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -78,15 +78,15 @@
       "jobName": "paragraph_1549584580483_-1896284649",
       "id": "20190208-000940_483896591",
       "dateCreated": "2019-02-08 00:09:40.483",
-      "dateStarted": "2019-02-08 00:11:16.866",
-      "dateFinished": "2019-02-08 00:11:16.876",
+      "dateStarted": "2019-02-09 20:46:25.358",
+      "dateFinished": "2019-02-09 20:46:25.373",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "In order to describe the difference between you prediction and the actual result, a simple loss function could be `math.abs(PredictedY - ActualY)`, whoes **sum** for all the **x** is 6. Obviously, a smaller sum means a more accurate prediction.",
       "user": "anonymous",
-      "dateUpdated": "2019-02-08 00:11:16.965",
+      "dateUpdated": "2019-02-09 20:46:25.457",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -118,15 +118,15 @@
       "jobName": "paragraph_1549584531461_1462801432",
       "id": "20190208-000851_213837793",
       "dateCreated": "2019-02-08 00:08:51.461",
-      "dateStarted": "2019-02-08 00:11:17.047",
-      "dateFinished": "2019-02-08 00:11:17.058",
+      "dateStarted": "2019-02-09 20:46:25.480",
+      "dateFinished": "2019-02-09 20:46:25.491",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "Some common Loss Function are:\n1. 0 - 1 loss function: `if (PredictedY \u003d\u003d ActualY) 1 else 0`\n2. absolute loss function: `math.abs(PredictedY - ActualY)`\n3. quadratic loss function: `math.pow(PredictedY - ActualY, 2)`",
       "user": "anonymous",
-      "dateUpdated": "2019-02-08 00:11:17.279",
+      "dateUpdated": "2019-02-09 20:46:25.580",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -158,14 +158,21 @@
       "jobName": "paragraph_1549584606902_-1354047431",
       "id": "20190208-001006_1560856212",
       "dateCreated": "2019-02-08 00:10:06.902",
-      "dateStarted": "2019-02-08 00:11:17.323",
-      "dateFinished": "2019-02-08 00:11:17.331",
+      "dateStarted": "2019-02-09 20:46:25.603",
+      "dateFinished": "2019-02-09 20:46:25.610",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
       "user": "anonymous",
-      "config": {},
+      "dateUpdated": "2019-02-09 20:46:25.702",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {}
+      },
       "settings": {
         "params": {},
         "forms": {}
@@ -174,7 +181,7 @@
       "jobName": "paragraph_1549584677279_1951707646",
       "id": "20190208-001117_755818328",
       "dateCreated": "2019-02-08 00:11:17.279",
-      "status": "READY",
+      "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     }
   ],
@@ -183,10 +190,12 @@
   "noteParams": {},
   "noteForms": {},
   "angularObjects": {
-    "md:shared_process": []
+    "spark:shared_process": []
   },
   "config": {
-    "isZeppelinNotebookCronEnable": false
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false"
   },
   "info": {}
 }

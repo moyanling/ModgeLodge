@@ -2,6 +2,7 @@
 ### Scala ###
 *.class
 *.log
+logs/
 
 ### SBT ###
 target/
@@ -12,10 +13,6 @@ target/
 ### JetBrains ###
 .idea
 *.iml
-
-### JupyterNotebook ###
-.ipynb_checkpoints/
-.local/
 
 ### Project ###
 models/*

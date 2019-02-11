@@ -2,16 +2,18 @@ package org.mo39.fmbh.mnist.deeplearning4j
 import java.awt.image.BufferedImage
 import java.io.File
 
+import com.typesafe.scalalogging.LazyLogging
+
 import scala.collection.JavaConverters._
 import org.deeplearning4j.datasets.fetchers.MnistDataFetcher
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator
 import org.deeplearning4j.nn.api.OptimizationAlgorithm
-import org.deeplearning4j.nn.conf.{ MultiLayerConfiguration, NeuralNetConfiguration }
-import org.deeplearning4j.nn.conf.layers.{ DenseLayer, OutputLayer }
+import org.deeplearning4j.nn.conf.{MultiLayerConfiguration, NeuralNetConfiguration}
+import org.deeplearning4j.nn.conf.layers.{DenseLayer, OutputLayer}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.nn.weights.WeightInit
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener
-import org.mo39.fmbh.common.app.{ Displayable, JupyterMLApp }
+import org.mo39.fmbh.common.app.Displayable
 import org.nd4j.evaluation.classification.Evaluation
 import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.api.ndarray.INDArray
@@ -20,7 +22,7 @@ import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction
 import org.mo39.fmbh.common.enriched.BufferedImage._
 import org.mo39.fmbh.common.ml._
 
-object Mnist extends JupyterMLApp with MnistToXml {
+object Mnist extends LazyLogging with MnistToXml {
   case class Config(
       @config(description = "The width of a Mnist image")
       width: Int = 28,
@@ -111,13 +113,13 @@ object Mnist extends JupyterMLApp with MnistToXml {
 
 trait MnistToXml extends Displayable {
 
-  override def featureToXml(a: Any): xml.Elem = {
+  override def featureToXml(a: AnyRef): xml.Elem = {
     require(a.isInstanceOf[INDArray])
     val src = mkBase64ImgUrl(a.asInstanceOf[INDArray])
     <img src={src}></img>
   }
 
-  override def labelToXml(a: Any): xml.Elem = {
+  override def labelToXml(a: AnyRef): xml.Elem = {
     require(a.isInstanceOf[INDArray])
     val label = a.asInstanceOf[INDArray]
     require(label.rank() == 2)

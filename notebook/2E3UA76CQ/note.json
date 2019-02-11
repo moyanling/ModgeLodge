@@ -1,0 +1,103 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark.dep\nz.load(\"org.mo39.fmbh:modgelodge_2.11:0.1-SNAPSHOT\")",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-10 04:27:02.778",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "res0: org.apache.zeppelin.dep.Dependency \u003d org.apache.zeppelin.dep.Dependency@5f4fba30\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1549756458775_-1415247990",
+      "id": "20190209-235418_711040429",
+      "dateCreated": "2019-02-09 23:54:18.775",
+      "dateStarted": "2019-02-10 04:27:02.849",
+      "dateFinished": "2019-02-10 04:27:09.110",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\norg.mo39.fmbh.ModgeLodge.greetings()",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-10 15:58:11.856",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch1\u003eHello, World!\u003c/h1\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1549756468348_171639741",
+      "id": "20190209-235428_1022177116",
+      "dateCreated": "2019-02-09 23:54:28.348",
+      "dateStarted": "2019-02-10 15:58:11.920",
+      "dateFinished": "2019-02-10 15:58:27.169",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-10 04:04:56.329",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1549771496327_-1821005027",
+      "id": "20190210-040456_84154996",
+      "dateCreated": "2019-02-10 04:04:56.327",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Hello World",
+  "id": "2E3UA76CQ",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {
+    "spark:shared_process": []
+  },
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

@@ -10,9 +10,9 @@ import org.mo39.fmbh.common.util.Reflect
   */
 trait Displayable {
 
-  def featureToXml(a: Any): xml.Elem
-  def labelToXml(a: Any): xml.Elem
-  def configToXml(a: Any): xml.Elem = {
+  def featureToXml(a: AnyRef): xml.Elem
+  def labelToXml(a: AnyRef): xml.Elem
+  def configToXml(a: AnyRef): xml.Elem = {
     val metadata = Reflect.getCaseAccessorMetaData[config](a)
     if (metadata.isEmpty) return <p>No config found.</p>
     val clazz = a.getClass
